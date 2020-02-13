@@ -41,7 +41,7 @@ django-haystack==2.8.1
 django-libsass==0.8
 django-model-utils==3.2.0
 django-nose==1.4.6
-django-oscar==1.6.7
+django-oscar==2.0.4
 django-phonenumber-field==2.0.1
 django-rest-swagger==2.2.0
 django-simple-history==2.8.0
@@ -93,7 +93,7 @@ markdown==2.6.9
 markupsafe==1.1.1
 mccabe==0.6.1             # via pylint
 mock-django==0.6.10
-mock==2.0.0
+mock==3.0.5
 mysqlclient==1.4.6
 ndg-httpsclient==0.5.1
 newrelic==4.20.1.121
@@ -144,7 +144,6 @@ six==1.14.0
 slumber==0.7.1
 git+https://github.com/python-social-auth/social-app-django.git@c00d23c2b45c3317bd35b15ad1b959338689cef8#egg=social-auth-app-django
 social-auth-core==3.2.0
-sorl-thumbnail==12.4.1
 soupsieve==1.9.5          # via beautifulsoup4
 stevedore==1.32.0
 stripe==1.70.0
@@ -156,7 +155,6 @@ tox==3.14.4
 typed-ast==1.4.1          # via astroid
 typing==3.7.4.1
 unicodecsv==0.14.1
-unidecode==1.0.23
 uritemplate==3.0.1
 urllib3==1.25.8
 virtualenv==20.0.3
