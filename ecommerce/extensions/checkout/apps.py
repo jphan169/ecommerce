@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from django.apps import AppConfig
+from oscar.apps.checkout import apps
 
 
 class CheckoutAppConfig(AppConfig):
@@ -12,3 +13,7 @@ class CheckoutAppConfig(AppConfig):
 
         # noinspection PyUnresolvedReferences
         import ecommerce.extensions.checkout.signals  # pylint: disable=unused-import, import-outside-toplevel
+
+
+class CheckoutConfig(apps.CheckoutConfig):
+    name = 'ecommerce.extensions.checkout'

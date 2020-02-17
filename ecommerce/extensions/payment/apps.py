@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 
-from oscar.apps.payment import config
+from oscar.apps.payment import apps
 
 
-class PaymentConfig(config.PaymentConfig):
+class PaymentConfig(apps.PaymentConfig):
     name = 'ecommerce.extensions.payment'
 
     def ready(self):

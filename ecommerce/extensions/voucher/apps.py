@@ -2,10 +2,10 @@ from __future__ import absolute_import
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from oscar.apps.voucher import config
+from oscar.apps.voucher import apps
 
 
-class VoucherConfig(config.VoucherConfig):
+class VoucherConfig(apps.VoucherConfig):
     name = 'ecommerce.extensions.voucher'
 
     def ready(self):  # pragma: no cover

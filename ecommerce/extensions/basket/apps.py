@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-from oscar.apps.basket import config
+from oscar.apps.basket import apps
 
 
-class BasketConfig(config.BasketConfig):
+class BasketConfig(apps.BasketConfig):
     name = 'ecommerce.extensions.basket'
