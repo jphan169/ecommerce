@@ -21,12 +21,12 @@ from ecommerce.extensions.order.constants import PaymentEventTypeName
 from ecommerce.extensions.payment.helpers import get_processor_class_by_name
 from ecommerce.extensions.refund.exceptions import InvalidStatus
 from ecommerce.extensions.refund.status import REFUND, REFUND_LINE
+from ecommerce.extensions.refund.signals import post_refund
 
 logger = logging.getLogger(__name__)
 
 PaymentEvent = get_model('order', 'PaymentEvent')
 PaymentEventType = get_model('order', 'PaymentEventType')
-post_refund = get_class('refund.signals', 'post_refund')
 
 
 class StatusMixin:
