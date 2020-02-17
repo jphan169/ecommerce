@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 
 from django.conf.urls import url
-from oscar.core.application import Application
+from oscar.core.application import OscarConfig
 from oscar.core.loading import get_class
 
 
-class RefundsDashboardApplication(Application):
+class RefundsDashboardConfig(OscarConfig):
     name = 'refunds'
     default_permissions = ['is_staff', ]
     permissions_map = {
@@ -24,4 +24,3 @@ class RefundsDashboardApplication(Application):
         return self.post_process_urls(urls)
 
 
-application = RefundsDashboardApplication()
