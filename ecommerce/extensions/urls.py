@@ -5,7 +5,7 @@ from django.conf.urls import include, url
 from django.apps import apps
 from ecommerce.extensions.payment.apps import PaymentConfig as payment
 
-application = apps.get_app_config('ecommerce')
+application = apps.get_app_config('extensions')
 
 urlpatterns = [
     url(r'^api/', include('ecommerce.extensions.api.urls', namespace='api')),

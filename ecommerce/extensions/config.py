@@ -5,7 +5,7 @@ from oscar.core.application import OscarConfig
 
 
 class EdxShop(config.Shop):
-    name = "ecommerce"
+    name = "extensions"
     # URLs are only visible to users with staff permissions
     default_permissions = 'is_staff'
 
