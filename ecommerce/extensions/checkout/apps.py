@@ -6,24 +6,20 @@ from oscar.apps.checkout import apps
 from oscar.core.loading import get_class
 
 
-class CheckoutAppConfig(AppConfig):
+class CheckoutConfig(apps.CheckoutConfig):
     name = 'ecommerce.extensions.checkout'
     verbose_name = 'Checkout'
 
+
     def ready(self):
-        super(CheckoutAppConfig, self).ready()
+        super().ready()
 
         # noinspection PyUnresolvedReferences
         import ecommerce.extensions.checkout.signals  # pylint: disable=unused-import, import-outside-toplevel
-
-
-class CheckoutConfig(apps.CheckoutConfig):
-    name = 'ecommerce.extensions.checkout'
-
-    free_checkout = get_class('checkout.views', 'FreeCheckoutView')
-    cancel_checkout = get_class('checkout.views', 'CancelCheckoutView')
-    checkout_error = get_class('checkout.views', 'CheckoutErrorView')
-    receipt_response = get_class('checkout.views', 'ReceiptResponseView')
+        self.free_checkout = get_class('checkout.views', 'FreeCheckoutView')
+        self.cancel_checkout = get_class('checkout.views', 'CancelCheckoutView')
+        self.checkout_error = get_class('checkout.views', 'CheckoutErrorView')
+        self.receipt_response = get_class('checkout.views', 'ReceiptResponseView')
 
     def get_urls(self):
         urls = [

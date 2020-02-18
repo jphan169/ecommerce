@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 
-from auth_backends.urls import oauth2_urlpatterns
 from django.conf.urls import include, url
 from oscar.apps.dashboard import apps
 from oscar.core.loading import get_class
-
-from ecommerce.core.views import LogoutView
-
-# Note: Add ecommerce's logout override first to ensure it is registered by Django as the
-# actual logout view. Ecommerce's logout implementation supports different site configuration.
-AUTH_URLS = [url(r'^logout/$', LogoutView.as_view(), name='logout'), ] + oauth2_urlpatterns
 
 
 class DashboardConfig(apps.DashboardConfig):
     name = 'ecommerce.extensions.dashboard'
 
-    index_view = get_class('dashboard.views', 'ExtendedIndexView')
-    refunds_app = get_class('dashboard.refunds.app', 'application')
+    def ready(self):
+        super().ready()
+        from auth_backends.urls import oauth2_urlpatterns
+        from ecommerce.core.views import LogoutView
+        # Note: Add ecommerce's logout override first to ensure it is registered by Django as the
+        # actual logout view. Ecommerce's logout implementation supports different site configuration.
+        self.AUTH_URLS = [url(r'^logout/$', LogoutView.as_view(), name='logout'), ] + oauth2_urlpatterns
+        self.index_view = get_class('dashboard.views', 'ExtendedIndexView')
+        self.refunds_app = get_class('dashboard.refunds.apps', 'RefundsDashboardConfig')
 
     def get_urls(self):
         urls = [
@@ -36,5 +36,5 @@ class DashboardConfig(apps.DashboardConfig):
             url(r'^shipping/', include(self.shipping_app.urls)),
             url(r'^refunds/', include(self.refunds_app.urls)),
         ]
-        urls += AUTH_URLS
+        urls += self.AUTH_URLS
         return self.post_process_urls(urls)

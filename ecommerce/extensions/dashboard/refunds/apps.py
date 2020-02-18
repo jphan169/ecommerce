@@ -13,8 +13,10 @@ class RefundsDashboardConfig(OscarConfig):
         'detail': (['is_staff'], ['partner.dashboard_access']),
     }
 
-    refund_list_view = get_class('dashboard.refunds.views', 'RefundListView')
-    refund_detail_view = get_class('dashboard.refunds.views', 'RefundDetailView')
+    def ready(self):
+        super().ready()
+        self.refund_list_view = get_class('dashboard.refunds.views', 'RefundListView')
+        self.refund_detail_view = get_class('dashboard.refunds.views', 'RefundDetailView')
 
     def get_urls(self):
         urls = [

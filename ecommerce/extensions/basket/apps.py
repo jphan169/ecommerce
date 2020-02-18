@@ -7,8 +7,11 @@ from oscar.core.loading import get_class
 
 class BasketConfig(apps.BasketConfig):
     name = 'ecommerce.extensions.basket'
-    basket_add_items_view = get_class('basket.views', 'BasketAddItemsView')
-    summary_view = get_class('basket.views', 'BasketSummaryView')
+    
+    def ready(self):
+        super().ready()
+        self.basket_add_items_view = get_class('basket.views', 'BasketAddItemsView')
+        self.summary_view = get_class('basket.views', 'BasketSummaryView')
 
     def get_urls(self):
         urls = [
