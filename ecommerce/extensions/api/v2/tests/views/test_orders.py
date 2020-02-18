@@ -4,7 +4,6 @@ import json
 from decimal import Decimal
 
 import ddt
-import httpretty
 import mock
 import six
 from django.contrib.auth import get_user_model
