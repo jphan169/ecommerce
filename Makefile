@@ -37,7 +37,7 @@ requirements.js:
 	# Allow root for Docker
 	$(NODE_BIN)/bower install --allow-root
 
-requirements: #requirements.js
+requirements: requirements.js
 	pip install -r requirements/dev.txt --exists-action w
 
 requirements.tox:
