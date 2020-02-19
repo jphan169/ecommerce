@@ -29,12 +29,15 @@ OSCAR_APPS = [
     'oscar.apps.dashboard.vouchers',
     'oscar.apps.dashboard.communications',
     'oscar.apps.dashboard.shipping',
+    'oscar_promotions',
+    'oscar_promotions.dashboard',
 
     # 3rd-party apps that oscar depends on
     'haystack',
     'treebeard',
     'django_tables2',
 
+    'ecommerce.extensions',
     'ecommerce.extensions.api',
     'ecommerce.extensions.fulfillment',
     'ecommerce.extensions.refund',
