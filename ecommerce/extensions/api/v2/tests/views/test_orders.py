@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 
 import json
+from datetime import datetime
 from decimal import Decimal
 
 import ddt
 import httpretty
 import mock
+import pytz
 import six
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -569,6 +571,94 @@ class ManualCourseEnrollmentOrderViewSetTests(TestCase):
                 str(condition.enterprise_customer_uuid),
                 str(expected_enrollment.get('enterprise_customer_uuid'))
             )
+
+    def test_create_manual_order_with_date_placed(self):
+        """"
+        Test that manual enrollment order for old enrollment can be created correctly.
+        """
+        price_1 = 100
+        price_2 = 200
+        final_price = 300
+        stock_record = self.course.seat_products.filter(
+            attributes__name='certificate_type'
+        ).exclude(
+            attribute_values__value_text='audit'
+        ).first().stockrecords.first()
+
+        time_at_initial_price = datetime.now(pytz.utc).isoformat()
+
+        stock_record.price_excl_tax = price_1
+        stock_record.save()
+        stock_record.price_excl_tax = price_2
+        stock_record.save()
+
+        time_at_price_2 = datetime.now(pytz.utc).isoformat()
+
+        stock_record.price_excl_tax = final_price
+        stock_record.save()
+
+        time_at_final_price = datetime.now(pytz.utc).isoformat()
+
+        self.assertEqual(stock_record.history.count(), 4)
+
+        post_data = {
+            "enrollments": [
+                {
+                    "lms_user_id": 11,
+                    "username": "ma1",
+                    "email": "ma`@example.com",
+                    "date_placed": time_at_initial_price,
+                    "course_run_key": self.course.id,
+                    "enterprise_customer_name": "an-enterprise-customer",
+                    "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
+                },
+                {
+                    "lms_user_id": 12,
+                    "username": "ma2",
+                    "email": "ma2@example.com",
+                    "date_placed": time_at_price_2,
+                    "course_run_key": self.course.id,
+                    "enterprise_customer_name": "an-enterprise-customer",
+                    "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
+                },
+                {
+                    "lms_user_id": 13,
+                    "username": "ma3",
+                    "email": "ma3@example.com",
+                    "date_placed": time_at_final_price,
+                    "course_run_key": self.course.id,
+                    "enterprise_customer_name": "an-enterprise-customer",
+                    "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
+                },
+            ]
+        }
+
+        response_status, response_data = self.post_order(post_data, self.user)
+        expected_enrollments = post_data["enrollments"]
+        self.assertEqual(response_status, status.HTTP_200_OK)
+        orders = response_data.get("orders")
+        self.assertEqual(len(orders), len(expected_enrollments))
+
+        for response_order, expected_enrollment in zip(orders, expected_enrollments):
+            # get created order
+            order = Order.objects.get(number=response_order['detail'])
+            expected_date_placed = expected_enrollment['date_placed']
+            self.assertEqual(order.date_placed.isoformat(), expected_date_placed)
+            self.assertEqual(order.lines.count(), 1)
+            line = order.lines.first()
+
+            if expected_date_placed == time_at_initial_price:
+                expected_course_price = self.course_price
+            elif expected_date_placed == time_at_price_2:
+                expected_course_price = price_2
+            elif expected_date_placed == time_at_final_price:
+                expected_course_price = final_price
+            else:
+                expected_course_price = "Invalid Price"
+            self.assertEqual(line.line_price_before_discounts_incl_tax, expected_course_price)
+            self.assertEqual(line.line_price_before_discounts_excl_tax, expected_course_price)
+            self.assertEqual(line.line_price_incl_tax, 0)
+            self.assertEqual(line.line_price_excl_tax, 0)
 
     def test_create_manual_order_with_incorrect_course(self):
         """"

@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import logging
 from decimal import Decimal
 
+import dateutil
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -116,6 +117,7 @@ class ManualCourseEnrollmentOrderViewSet(EdxOrderPlacementMixin, ViewSet):
             >>>             "email": "me@example.com",
             >>>             "course_run_key": "course-v1:TestX+Test100+2019_T1",
             >>>             "discount_percentage": 75.0,
+            >>>             "date_placed": '2020-02-11T09:38:47.634561+00:00',  # optional param, only for old records.
             >>>             "enterprise_customer_name": "an-enterprise-customer",
             >>>             "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
             >>>         },
@@ -123,7 +125,7 @@ class ManualCourseEnrollmentOrderViewSet(EdxOrderPlacementMixin, ViewSet):
             >>>             "lms_user_id": 123,
             >>>             "username": "metoo",
             >>>             "email": "metoo@example.com",
-            >>>             "course_run_key": ""
+            >>>             "course_run_key": "",
             >>>             "enterprise_customer_name": "an-enterprise-customer",
             >>>             "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
             >>>         },
@@ -139,6 +141,7 @@ class ManualCourseEnrollmentOrderViewSet(EdxOrderPlacementMixin, ViewSet):
             >>>             "email": "me@example.com",
             >>>             "course_run_key": "course-v1:TestX+Test100+2019_T1",
             >>>             "discount_percentage": 75.0,
+            >>>             "date_placed": '2020-02-11T09:38:47.634561+00:00',
             >>>             "enterprise_customer_name": "an-enterprise-customer",
             >>>             "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
             >>>             "status": "success",
@@ -148,7 +151,7 @@ class ManualCourseEnrollmentOrderViewSet(EdxOrderPlacementMixin, ViewSet):
             >>>             "lms_user_id": 123,
             >>>             "username": "metoo",
             >>>             "email": "metoo@example.com",
-            >>>             "course_run_key": ""
+            >>>             "course_run_key": "",
             >>>             "enterprise_customer_name": "an-enterprise-customer",
             >>>             "enterprise_customer_uuid": "394a5ce5-6ff4-4b2b-bea1-a273c6920ae1",
             >>>             "status": "failure",
@@ -267,6 +270,7 @@ class ManualCourseEnrollmentOrderViewSet(EdxOrderPlacementMixin, ViewSet):
         Applicator().apply_offers(basket, [discount_offer])
         try:
             order = self.place_free_order(basket)
+            self._update_order_according_to_date_place(order, enrollment.get('date_placed'))
             self._update_orderline_with_enterprise_discount(order, discount_percentage)
         except:  # pylint: disable=bare-except
             logger.exception(
@@ -316,6 +320,38 @@ class ManualCourseEnrollmentOrderViewSet(EdxOrderPlacementMixin, ViewSet):
                 effective_discount_percentage
             )
             line.save()
+
+    def _update_order_according_to_date_place(self, order, date_placed):
+        """
+            This is a Single Time use functionality to created order records for old enrollments.
+            We will revert this PR after using it.
+        Args:
+            order: An Order object
+            date_placed: iso format datetime
+
+        Returns:
+            Nothing
+
+        """
+        if not date_placed:
+            return
+
+        date_placed = dateutil.parser.isoparse(date_placed)
+        order.date_placed = date_placed
+        order.save()
+
+        for line in order.lines.all():
+            old_stock = line.stockrecord.history.filter(history_date__lt=date_placed).order_by('-history_date').first()
+            stock_record = old_stock or line.stockrecord
+            price = stock_record.price_excl_tax or Decimal('0')
+            quantity = line.quantity
+            line.line_price_before_discounts_incl_tax = price * quantity
+            line.line_price_before_discounts_excl_tax = price * quantity
+            line.unit_price_incl_tax = price
+            line.unit_price_excl_tax = price
+            line.save()
+
+        logger.info('[Manual Order Back populate] Order completed. Order: %s', order.number,)
 
     def _get_enrollment_data(self, enrollment):
         """
