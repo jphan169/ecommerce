@@ -122,7 +122,7 @@ class OrderViewBrowserTestBase(LiveServerTestCase):
 
 
 class OrderListViewBrowserTests(OrderViewTestsMixin, RefundTestMixin, OrderViewBrowserTestBase):
-    path = reverse('dashboard:order-list')
+    path = reverse('dashboard:order')
 
     @skipIf(os.environ.get('TRAVIS'), 'This test consistently fails on Travis.')
     @override_settings(FULFILLMENT_MODULES=['ecommerce.extensions.fulfillment.tests.modules.FakeFulfillmentModule', ])

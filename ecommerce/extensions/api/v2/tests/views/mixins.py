@@ -32,7 +32,7 @@ class CatalogMixin(DiscoveryTestMixin):
             'id': catalog.id,
             'partner': catalog.partner.id,
             'name': catalog.name,
-            'products': self.get_full_url(reverse('api:v2:catalog-product-list',
+            'products': self.get_full_url(reverse('api:v2:catalog-product',
                                                   kwargs={'parent_lookup_stockrecords__catalogs': catalog.id}))
         }
         return data

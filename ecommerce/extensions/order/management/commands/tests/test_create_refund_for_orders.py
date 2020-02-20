@@ -24,7 +24,7 @@ class CreateRefundForOrdersTests(TestCase):
     """
     def setUp(self):
         super(CreateRefundForOrdersTests, self).setUp()
-        self.url = reverse('api:v2:manual-course-enrollment-order-list')
+        self.url = reverse('api:v2:manual-course-enrollment-order')
         self.user = self.create_user(is_staff=True)
         self.client.login(username=self.user.username, password=self.password)
         self.course = CourseFactory(id='course-v1:MAX+CX+Course', partner=self.partner)

@@ -45,7 +45,7 @@ class ManualEnrollmentOrderDiscountConditionTests(TestCase):
         request_patcher = patch('crum.get_current_request')
         self.request_patcher = request_patcher.start()
         self.request_patcher.return_value = RequestFactory().post(
-            reverse('api:v2:manual-course-enrollment-order-list')
+            reverse('api:v2:manual-course-enrollment-order')
         )
         self.addCleanup(request_patcher.stop)
 

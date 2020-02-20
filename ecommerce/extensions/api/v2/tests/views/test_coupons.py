@@ -48,7 +48,7 @@ Range = get_model('offer', 'Range')
 StockRecord = get_model('partner', 'StockRecord')
 Voucher = get_model('voucher', 'Voucher')
 
-COUPONS_LINK = reverse('api:v2:coupons-list')
+COUPONS_LINK = reverse('api:v2:coupons')
 ENTERPRISE_COUPONS_LINK = reverse('api:v2:enterprise-coupons-list')
 
 

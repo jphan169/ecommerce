@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 
+import django_filters
 import six
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -728,7 +729,7 @@ class OfferAssignmentEmailTemplatesViewSet(ModelViewSet):
     """
     serializer_class = OfferAssignmentEmailTemplatesSerializer
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_fields = ('email_type', 'active')
 
     http_method_names = ['get', 'head', 'options', 'post']

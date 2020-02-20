@@ -34,7 +34,7 @@ class ManualEnrollmentOrderDiscountCondition(
         else
             return False
         """
-        if crum.get_current_request().META['PATH_INFO'] != reverse('api:v2:manual-course-enrollment-order-list'):
+        if crum.get_current_request().META['PATH_INFO'] != reverse('api:v2:manual-course-enrollment-order'):
             self.log_error_message(
                 'This condition is only applicable to manual course enrollement orders.',
                 offer,

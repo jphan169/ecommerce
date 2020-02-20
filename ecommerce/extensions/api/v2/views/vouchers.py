@@ -35,7 +35,7 @@ StockRecord = get_model('partner', 'StockRecord')
 Voucher = get_model('voucher', 'Voucher')
 
 
-class VoucherFilter(django_filters.FilterSet):
+class VoucherFilter(django_filters.rest_framework.FilterSet):
     """
     Filter for vouchers via query string parameters.
     Currently supports filtering via the voucher's code.
@@ -51,7 +51,7 @@ class VoucherViewSet(NonDestroyableModelViewSet):
     """ View set for vouchers. """
     serializer_class = serializers.VoucherSerializer
     permission_classes = (IsOffersOrIsAuthenticatedAndStaff,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = VoucherFilter
 
     def get_queryset(self):

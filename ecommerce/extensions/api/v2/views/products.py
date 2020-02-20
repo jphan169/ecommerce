@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import logging
+import django_filters
 
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
@@ -24,7 +25,7 @@ Product = get_model('catalogue', 'Product')
 
 class ProductViewSet(NestedViewSetMixin, NonDestroyableModelViewSet):
     serializer_class = serializers.ProductSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = ProductFilter
     permission_classes = (IsAuthenticated, IsAdminUser,)
 

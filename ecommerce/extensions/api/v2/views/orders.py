@@ -2,8 +2,8 @@
 from __future__ import absolute_import
 
 import logging
+import django_filters
 from decimal import Decimal
-
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -50,7 +50,7 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer
     throttle_classes = (ServiceUserThrottle,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = OrderFilter
 
     def filter_queryset(self, queryset):
