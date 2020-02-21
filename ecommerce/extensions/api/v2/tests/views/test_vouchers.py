@@ -47,7 +47,7 @@ Voucher = get_model('voucher', 'Voucher')
 @ddt.ddt
 class VoucherViewSetTests(DiscoveryMockMixin, DiscoveryTestMixin, LmsApiMockMixin, TestCase):
     """ Tests for the VoucherViewSet view set. """
-    path = reverse('api:v2:vouchers')
+    path = reverse('api:v2:vouchers-list')
 
     def setUp(self):
         super(VoucherViewSetTests, self).setUp()

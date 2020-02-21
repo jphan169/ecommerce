@@ -441,7 +441,7 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
         return obj.modified.strftime(ISO_8601_FORMAT) if obj.modified else None
 
     def get_products_url(self, obj):
-        return reverse('api:v2:course-product', kwargs={'parent_lookup_course_id': obj.id},
+        return reverse('api:v2:course-product-list', kwargs={'parent_lookup_course_id': obj.id},
                        request=self.context['request'])
 
     def get_has_active_bulk_enrollment_code(self, obj):
@@ -643,14 +643,14 @@ class PartnerSerializer(serializers.ModelSerializer):
 
     def get_products(self, obj):
         return reverse(
-            'api:v2:partner-product',
+            'api:v2:partner-product-list',
             kwargs={'parent_lookup_stockrecords__partner_id': obj.id},
             request=self.context['request']
         )
 
     def get_catalogs(self, obj):
         return reverse(
-            'api:v2:partner-catalogs',
+            'api:v2:partner-catalogs-list',
             kwargs={'parent_lookup_partner_id': obj.id},
             request=self.context['request']
         )
@@ -670,7 +670,7 @@ class CatalogSerializer(serializers.ModelSerializer):
 
     def get_products(self, obj):
         return reverse(
-            'api:v2:catalog-product',
+            'api:v2:catalog-product-list',
             kwargs={'parent_lookup_stockrecords__catalogs': obj.id},
             request=self.context['request']
         )

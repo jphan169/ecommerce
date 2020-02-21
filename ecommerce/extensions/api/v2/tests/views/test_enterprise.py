@@ -61,7 +61,7 @@ Product = get_model('catalogue', 'Product')
 Voucher = get_model('voucher', 'Voucher')
 VoucherApplication = get_model('voucher', 'VoucherApplication')
 
-ENTERPRISE_COUPONS_LINK = reverse('api:v2:enterprise-coupons')
+ENTERPRISE_COUPONS_LINK = reverse('api:v2:enterprise-coupons-list')
 OFFER_ASSIGNMENT_SUMMARY_LINK = reverse('api:v2:enterprise-offer-assignment-summary-list')
 TEMPLATE_GREETING = 'hello there '
 TEMPLATE_CLOSING = ' kind regards'
@@ -958,7 +958,7 @@ class EnterpriseCouponViewSetRbacTests(
         response = self.get_response(
             'GET',
             reverse(
-                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/overview',
+                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/overview-list',
                 kwargs={'enterprise_id': self.data['enterprise_customer']['id']}
             )
         )
@@ -984,7 +984,7 @@ class EnterpriseCouponViewSetRbacTests(
         response = self.get_response(
             'GET',
             reverse(
-                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search',
+                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search-list',
                 kwargs={'enterprise_id': self.data['enterprise_customer']['id']}
             )
         )
@@ -1001,7 +1001,7 @@ class EnterpriseCouponViewSetRbacTests(
         response = self.get_response(
             'GET',
             reverse(
-                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search',
+                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search-list',
                 kwargs={'enterprise_id': self.data['enterprise_customer']['id']}
             )
         )
@@ -1014,7 +1014,7 @@ class EnterpriseCouponViewSetRbacTests(
         response = self.get_response(
             'GET',
             reverse(
-                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search',
+                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search-list',
                 kwargs={'enterprise_id': self.data['enterprise_customer']['id']}
             ),
             data={'user_email': 'iamsofake@notreal.com'}
@@ -1029,7 +1029,7 @@ class EnterpriseCouponViewSetRbacTests(
         response = self.get_response(
             'GET',
             reverse(
-                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search',
+                'api:v2:enterprise-coupons-(?P<enterprise-id>.+)/search-list',
                 kwargs={'enterprise_id': self.data['enterprise_customer']['id']}
             ),
             data={'voucher_code': '3456QWTERF46PS1R'}

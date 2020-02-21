@@ -25,7 +25,7 @@ User = get_user_model()
 
 
 class CourseViewSetTests(ProductSerializerMixin, DiscoveryTestMixin, TestCase):
-    list_path = reverse('api:v2:courses')
+    list_path = reverse('api:v2:course-list')
 
     def setUp(self):
         super(CourseViewSetTests, self).setUp()
