@@ -14,7 +14,7 @@ from oscar.core.loading import get_model
 from requests.exceptions import ConnectionError as ReqConnectionError
 from requests.exceptions import Timeout
 from rest_framework import filters, generics, serializers, status
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -315,7 +315,7 @@ class EnterpriseCouponViewSet(CouponViewSet):
         if coupon_was_migrated:
             super(EnterpriseCouponViewSet, self).update_range_data(request_data, vouchers)
 
-    @detail_route(url_path='codes', permission_classes=[IsAuthenticated])
+    @action(detail=True, url_path='codes', permission_classes=[IsAuthenticated])
     @permission_required(
         'enterprise.can_view_coupon', fn=lambda request, pk, format=None: get_enterprise_from_product(pk)
     )
@@ -459,7 +459,7 @@ class EnterpriseCouponViewSet(CouponViewSet):
             id__in=redeemed_voucher_application_ids
         ).values('voucher__code', 'user__email').distinct().order_by('user__email')
 
-    @list_route(url_path=r'(?P<enterprise_id>.+)/search', permission_classes=[IsAuthenticated])
+    @action(detail=False, url_path=r'(?P<enterprise_id>.+)/search', permission_classes=[IsAuthenticated])
     @permission_required('enterprise.can_view_coupon', fn=lambda request, enterprise_id: enterprise_id)
     def search(self, request, enterprise_id):     # pylint: disable=unused-argument
         """
@@ -603,7 +603,7 @@ class EnterpriseCouponViewSet(CouponViewSet):
                     _prepare_redemption_data(coupon_data, offer_assignment)
         return redemptions_and_assignments
 
-    @list_route(url_path=r'(?P<enterprise_id>.+)/overview', permission_classes=[IsAuthenticated])
+    @action(detail=False, url_path=r'(?P<enterprise_id>.+)/overview', permission_classes=[IsAuthenticated])
     @permission_required('enterprise.can_view_coupon', fn=lambda request, enterprise_id: enterprise_id)
     def overview(self, request, enterprise_id):     # pylint: disable=unused-argument
         """
@@ -635,7 +635,7 @@ class EnterpriseCouponViewSet(CouponViewSet):
         if not is_coupon_available(coupon):
             raise DRFValidationError({'error': message})
 
-    @detail_route(methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     @permission_required('enterprise.can_assign_coupon', fn=lambda request, pk: get_enterprise_from_product(pk))
     def assign(self, request, pk):  # pylint: disable=unused-argument
         """
@@ -654,7 +654,7 @@ class EnterpriseCouponViewSet(CouponViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @detail_route(methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     @permission_required('enterprise.can_assign_coupon', fn=lambda request, pk: get_enterprise_from_product(pk))
     def revoke(self, request, pk):  # pylint: disable=unused-argument
         """
@@ -675,7 +675,7 @@ class EnterpriseCouponViewSet(CouponViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @detail_route(methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     @permission_required('enterprise.can_assign_coupon', fn=lambda request, pk: get_enterprise_from_product(pk))
     def remind(self, request, pk):  # pylint: disable=unused-argument
         """

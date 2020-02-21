@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from edx_rest_framework_extensions.auth.jwt.authentication import JwtAuthentication
 from oscar.core.loading import get_class, get_model
 from rest_framework import filters, status, viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -68,7 +68,7 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
 
         return queryset.filter(partner=self.request.site.siteconfiguration.partner)
 
-    @detail_route(methods=['put', 'patch'])
+    @action(detail=True, methods=['put', 'patch'])
     def fulfill(self, request, number=None):  # pylint: disable=unused-argument
         """ Fulfill order """
         order = self.get_object()
