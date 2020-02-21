@@ -936,7 +936,7 @@ class BasketSummaryViewTests(EnterpriseServiceMockMixin, DiscoveryTestMixin, Dis
         testserver_login_url = self.get_full_url(reverse(settings.LOGIN_URL))
         expected_url = '{path}?next={next}'.format(path=testserver_login_url,
                                                    next=six.moves.urllib.parse.quote(self.path))
-        self.assertRedirects(response, expected_url, target_status_code=302)
+        self.assertRedirects(response, expected_url.replace('http://testserver.fake', ''), target_status_code=302)
 
     @ddt.data(
         (None, None),

@@ -97,7 +97,9 @@ class CybersourceSubmitViewTests(CybersourceMixin, TestCase):
         response = self.client.post(self.path)
         expected_url = '{base}?next={path}'.format(base=self.get_full_url(path=reverse(settings.LOGIN_URL)),
                                                    path=self.path)
-        self.assertRedirects(response, expected_url, fetch_redirect_response=False)
+        self.assertRedirects(
+            response, expected_url.replace('http://testserver.fake', ''), fetch_redirect_response=False
+        )
 
     @ddt.data('get', 'put', 'patch', 'head')
     def test_invalid_methods(self, method):

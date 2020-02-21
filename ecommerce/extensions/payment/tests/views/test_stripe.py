@@ -83,7 +83,9 @@ class StripeSubmitViewTests(PaymentEventsMixin, TestCase):
         response = self.client.post(self.path)
         expected_url = '{base}?next={path}'.format(base=self.get_full_url(path=reverse(settings.LOGIN_URL)),
                                                    path=self.path)
-        self.assertRedirects(response, expected_url, fetch_redirect_response=False)
+        self.assertRedirects(
+            response, expected_url.replace('http://testserver.fake', ''), fetch_redirect_response=False
+        )
 
     def test_payment_error(self):
         basket = self.create_basket()
